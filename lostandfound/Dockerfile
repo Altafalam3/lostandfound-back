@@ -22,4 +22,4 @@ COPY src src
 RUN ./mvnw clean package -DskipTests
 
 # Run the application
-CMD ["java", "-jar", "target/*.jar"]
+CMD ["java", "-jar", "target/lostandfound-0.0.1-SNAPSHOT.jar"]
