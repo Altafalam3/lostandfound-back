@@ -1,22 +1,25 @@
-# Use an official Java runtime as base image
+# Use Eclipse Temurin JDK 21 as base image
 FROM eclipse-temurin:21-jdk
 
-# Set working directory
+# Set working directory inside container
 WORKDIR /app
 
-# Copy Maven wrapper and pom.xml
+# Copy Maven wrapper and config files
 COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 
-# Build dependencies (cache layer)
+# Make mvnw executable (fix for Permission denied)
+RUN chmod +x mvnw
+
+# Download dependencies (cached in Docker layer)
 RUN ./mvnw dependency:go-offline -B
 
-# Copy source code
+# Copy the source code
 COPY src src
 
-# Build application
+# Build the application (skip tests for faster build)
 RUN ./mvnw clean package -DskipTests
 
-# Run the jar
+# Run the application
 CMD ["java", "-jar", "target/*.jar"]
